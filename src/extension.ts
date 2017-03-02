@@ -16,32 +16,34 @@ function openInSpecificPlatform(e: string, op: any, customBrowser: string) {
 }
 
 // common function for file opening
-function openFile(e: string, customBrowser: string) {
+function openFile(e: string, customBrowser: string, baseUri:string) {
     // check if it is html file
     const ext = path.extname(e.toString());
-    if (/^\.(html|htm|shtml|xhtml)$/.test(ext)) {
+    const basename = path.basename(e.toString());
+    if (/^\.(html|htm|shtml|xhtml|php|jsp|asp|aspx)$/.test(ext)) {
         // platform is operational system
         // darwin - mac os, others are good with open npm module
         if (platform === 'darwin') {
-            openInSpecificPlatform(e, open_darwin, customBrowser);
+            openInSpecificPlatform(baseUri + '/' + basename, open_darwin, customBrowser);
         }
         else {
-            openInSpecificPlatform(e, open, customBrowser);
+            openInSpecificPlatform(baseUri + '/' + basename, open, customBrowser);
         }
     } else {
-        vscode.window.showInformationMessage('Supports html file only!');
+        vscode.window.showInformationMessage('Current file cannot be previewed!');
     }
 }
 
 // main code of the extension
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand('extension.viewInBrowser', (e: vscode.Uri) => {
-        let config = vscode.workspace.getConfiguration('view-in-browser');
+    let disposable = vscode.commands.registerCommand('extension.previewInBrowser', (e: vscode.Uri) => {
+        let config = vscode.workspace.getConfiguration('preview-in-browser');
         let customBrowser = config.get<string>("customBrowser");
+        let baseUri = config.get<string>("baseUri");
 
         // if there is Uri it means the file was selected in the explorer.
         if (e.path) {
-            openFile(e.fsPath, customBrowser);
+            openFile(e.fsPath, customBrowser, baseUri);
         }
         else {
             let editor = vscode.window.activeTextEditor;
@@ -51,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             const file = editor.document.fileName;
-            openFile(`file:///${file}`, customBrowser);
+            openFile(`file:///${file}`, customBrowser, baseUri);
         }
     });
 
