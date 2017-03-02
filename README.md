@@ -6,7 +6,7 @@ Use command or context menu in the explorer.
 ### Command
 
     1. Open the command list (Press F1 or Ctrl + Shift + P)
-    2. Select `View In Browser`
+    2. Select `Preview In Browser`
 ### Keybindings
 
     1. Press Ctrl + F1
@@ -20,7 +20,8 @@ You can select what browser you want to open html file with. Default value is yo
 Add to User or Workspace settings:
 ``` 
 {
-    "view-in-browser.customBrowser": "chrome"
+    "preview-in-browser.customBrowser": "chrome",
+    "preview-in-browser.baseUri": "http://127.0.0.1/app"
 }
 ```
 
